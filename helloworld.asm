@@ -1,37 +1,19 @@
-section .data
-    hello db 'Hello, World!', 0
-    helloLen equ $ - hello
-    newline db 0xA
-    newlineLen equ $ - newline
+.MODEL SMALL
+.STACK 100H
 
-section .bss
-    counter resb 1
+.DATA
+    HelloWorldMsg   DB 'Hello, World!', 0
 
-section .text
-global _start
+.CODE
+MAIN PROC
+    ; Display "Hello, World!" message
+    MOV     AH, 09h             ; DOS function to print string
+    MOV     DX, OFFSET HelloWorldMsg ; Load address of message
+    INT     21h                 ; Call DOS interrupt
 
-_start:
-    mov byte [counter], 5
+    ; Exit program
+    MOV     AH, 4Ch             ; DOS function to terminate program
+    INT     21h                 ; Call DOS interrupt
+MAIN ENDP
 
-print_loop:
-    ; write "Hello, World!" system call
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, hello
-    mov edx, helloLen
-    int 0x80
-
-    ; write newline system call
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, newline
-    mov edx, newlineLen
-    int 0x80
-
-    dec byte [counter]
-    jnz print_loop
-
-    ; exit system call
-    mov eax, 1
-    xor ebx, ebx
-    int 0x80
+END MAIN
